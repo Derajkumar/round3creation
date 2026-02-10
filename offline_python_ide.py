@@ -341,6 +341,7 @@ else:
         random.shuffle(self.visible_template_keys)
 
         self.prog_actions = []
+        self.template_buttons = []  # Store template buttons for enable/disable control
         for key in self.visible_template_keys:
             i = int(key.replace("prog", ""))
             act = QAction(f"Prog {i}", self)
@@ -364,6 +365,35 @@ else:
         layout.addLayout(top_row)
 
         layout.addWidget(self.error_banner)
+        
+        # ---------- TEMPLATES PANEL ----------
+        # Display available templates as quick-access buttons
+        layout.addWidget(QLabel("📋 Available Templates (Click to Load)"))
+        templates_panel = QHBoxLayout()
+        
+        for key in self.visible_template_keys:
+            i = int(key.replace("prog", ""))
+            btn = QPushButton(f"Template {i}")
+            btn.setStyleSheet("""
+                QPushButton {
+                    background:#4f46e5;
+                    color:white;
+                    padding:10px 16px;
+                    font-size:12px;
+                    border-radius:6px;
+                    border: 2px solid #4f46e5;
+                    font-weight: bold;
+                }
+                QPushButton:hover { background:#4338ca; border: 2px solid #3730a3; }
+                QPushButton:pressed { background:#3730a3; }
+            """)
+            btn.clicked.connect(lambda checked=False, k=key: self.load_program_template(k))
+            templates_panel.addWidget(btn)
+            self.template_buttons.append((btn, key))
+        
+        templates_panel.addStretch()
+        layout.addLayout(templates_panel)
+        
         layout.addWidget(QLabel("📝 Code Editor"))
         layout.addWidget(self.editor, 3)
         layout.addLayout(btns)
@@ -405,6 +435,10 @@ else:
         self._hhook = None
         self._hook_proc_ptr = None
         self._protect_run_active = False
+        # Track whether we've grabbed the keyboard to block switching
+        self._keyboard_grabbed = False
+        # Exam mode flag (admin unlock required)
+        self.exam_lock_active = False
         try:
             app_instance = QApplication.instance()
             if app_instance is not None:
@@ -505,6 +539,16 @@ else:
             self._system_hook_installed = False
             self._hhook = None
             self._hook_proc_ptr = None
+            # If we grabbed the keyboard at the Qt level, release it now
+            try:
+                if getattr(self, '_keyboard_grabbed', False):
+                    try:
+                        self.releaseKeyboard()
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+            self._keyboard_grabbed = False
     def set_program_actions_enabled(self, enabled: bool):
         try:
             for act in getattr(self, "prog_actions", []):
@@ -516,6 +560,14 @@ else:
         try:
             for act in getattr(self, "file_actions", []):
                 act.setEnabled(enabled)
+        except Exception:
+            pass
+
+    def set_template_buttons_enabled(self, enabled: bool):
+        """Enable or disable the template quick-access buttons."""
+        try:
+            for btn, _ in getattr(self, "template_buttons", []):
+                btn.setEnabled(enabled)
         except Exception:
             pass
 
@@ -558,6 +610,7 @@ else:
         self.run_btn.setEnabled(False)
         self.set_program_actions_enabled(False)
         self.set_file_actions_enabled(False)
+        self.set_template_buttons_enabled(False)
         self.set_error_banner(True, "⏱ Time for the displayed templates has expired — editor is now read-only.")
         self.group_timer_label.setVisible(True)
         self._update_group_timer_label()
@@ -640,7 +693,7 @@ else:
             self.runtime_error = True
             self.disable_min_max()
             if self.current_template:
-                self.set_error_banner(True, f"❌ Syntax error detected — Fix the code in '{self.current_template}' and run successfully to enable minimize/maximize buttons")
+                self.set_error_banner(True, f"❌ Syntax error detected — Fix the code or switch to another template from the Programs menu")
             else:
                 self.set_error_banner(True, "❌ Syntax error detected — fix code and run to unlock window")
             self.lock_window()
@@ -732,6 +785,12 @@ else:
             try:
                 if self._install_system_key_block():
                     self._protect_run_active = True
+                    # Grab keyboard focus at the Qt level to help prevent app switching
+                    try:
+                        self.grabKeyboard()
+                        self._keyboard_grabbed = True
+                    except Exception:
+                        pass
             except Exception:
                 pass
         except Exception:
@@ -774,7 +833,7 @@ else:
                 self.output.insertPlainText("\n❌ ERROR: Error occurred\n")
                 self.disable_min_max()
                 if self.current_template:
-                    self.set_error_banner(True, f"❌ Runtime error detected — Fix the code in '{self.current_template}' to enable minimize/maximize buttons.")
+                    self.set_error_banner(True, f"❌ Runtime error detected — Fix the code or switch to another template from the Programs menu.")
                 else:
                     self.set_error_banner(True, "❌ Runtime error detected — window locked until fixed.")
                 self.lock_window()
@@ -851,7 +910,7 @@ else:
                     if not (self.group_timer_started and self.group_time_left_ms == 0):
                         self.set_program_actions_enabled(True)
                         self.set_file_actions_enabled(True)
-                    self.output.appendPlainText(f"\n✅ Code fixed successfully! Minimize/maximize buttons enabled.")
+                    self.output.appendPlainText(f"\n✅ Code fixed successfully! You can now switch to another template from the Programs menu or continue working.")
                 else:
                     self.enable_min_max()
                     self.unlock_window()
@@ -860,9 +919,19 @@ else:
                 self.disable_min_max()
                 self.lock_window()
                 if self.current_template:
-                    self.set_error_banner(True, f"❌ Run ended with errors — Fix the code in '{self.current_template}' to enable minimize/maximize buttons.")
+                    self.set_error_banner(True, f"❌ Run ended with errors — Fix the code or switch to another template from the Programs menu.")
                 else:
                     self.set_error_banner(True, "❌ Run ended with errors — window locked until fixed.")
+            # Activate exam-lock mode after process finishes
+            try:
+                self.exam_lock_active = True
+                self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
+                self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
+                self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+                self.showFullScreen()
+                self.output.appendPlainText("\n🔒 EXAM MODE ACTIVE — APP SWITCHING DISABLED")
+            except Exception:
+                pass
         finally:
             if self.temp_file and os.path.exists(self.temp_file):
                 try:
@@ -886,19 +955,43 @@ else:
                 pass
             self._pre_run_was_maximized = False
 
+    # ⛔ BLOCK CLOSE WHEN IN EXAM MODE
+    def closeEvent(self, event):
+        if getattr(self, 'exam_lock_active', False):
+            QMessageBox.warning(self, "Exam Mode", "Application cannot be closed during exam mode.")
+            event.ignore()
+        else:
+            event.accept()
+
+    # 🔓 ADMIN UNLOCK (Ctrl+F12)
+    def keyPressEvent(self, event):
+        try:
+            if event.key() == Qt.Key_F12 and event.modifiers() == Qt.ControlModifier:
+                self.exam_lock_active = False
+                try:
+                    self._uninstall_system_key_block()
+                except Exception:
+                    pass
+                self.setWindowFlag(Qt.WindowStaysOnTopHint, False)
+                self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
+                self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+                self.showNormal()
+                QMessageBox.information(self, "Unlocked", "Exam mode disabled.")
+                return
+        except Exception:
+            pass
+        # fallback to default handler
+        super().keyPressEvent(event)
+
     # ---------- PROGRAM TEMPLATES ----------
     def load_program_template(self, template_name):
         """
-        Run the template code (briefly, with a short timeout) BEFORE showing it in the editor.
-        If the code errors during that quick run, that's acceptable — we'll show minimal info, then load the template.
+        Load any template (from visible or all templates) at any time.
+        Run the template code briefly to check for immediate errors.
+        Allow switching between templates anytime, even if template has errors.
         """
         if template_name not in self.PROGRAM_TEMPLATES:
             QMessageBox.warning(self, "Error", f"Template '{template_name}' not found.")
-            return
-
-        # If a template is already loaded, prevent loading another one
-        if self.current_template:
-            QMessageBox.information(self, "Template Locked", "A template is already loaded. Fix it (run successfully) or clear it before loading another template.")
             return
 
         # If group timer expired, block loading
@@ -924,11 +1017,14 @@ else:
                 pass
             self.temp_file = None
 
-        # Ask user if they want to discard current content
+        # Ask user if they want to discard current content (only if there's unsaved code)
         if self.editor.toPlainText().strip():
+            if self.current_template:
+                msg = f"Switch to '{template_name}' template? Current template '{self.current_template}' will be discarded (unsaved changes lost)."
+            else:
+                msg = f"Load '{template_name}' template? This will replace current code."
             resp = QMessageBox.question(
-                self, "Load Template",
-                f"Load '{template_name}' template? This will replace current code.",
+                self, "Load Template", msg,
                 QMessageBox.Yes | QMessageBox.No
             )
             if resp != QMessageBox.Yes:
@@ -949,12 +1045,12 @@ else:
             try:
                 # 2-second timeout for a quick smoke-run (adjustable)
                 completed = subprocess.run([sys.executable, "-u", tmp_path],
-                                           input=None,
-                                           stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE,
-                                           timeout=2,
-                                           check=False,
-                                           encoding="utf-8")
+                input=None,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=2,
+                check=False,
+                encoding="utf-8")
                 # capture minimal info — do NOT show detailed tracebacks to user
                 if completed.returncode != 0 or completed.stderr.strip():
                     pre_run_result = "error"
@@ -980,7 +1076,32 @@ else:
             self.output.appendPlainText("ℹ️ Template pre-run completed (no immediate errors).\n")
         elif pre_run_result in ("timeout", "error", "compile_error"):
             self.output.clear()
-            self.output.appendPlainText("ℹ️ Template pre-run detected an issue (will load template for fixing).\n")
+            self.output.appendPlainText("ℹ️ Template pre-run detected an issue (template loaded for fixing).\n")
+
+        # Activate exam mode now (lock the app / disable switching) BEFORE loading template into editor.
+        try:
+            self.exam_lock_active = True
+            self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
+            self.setWindowFlag(Qt.WindowMinimizeButtonHint, False)
+            self.setWindowFlag(Qt.WindowMaximizeButtonHint, False)
+            try:
+                self.showFullScreen()
+            except Exception:
+                pass
+            # Try to install system key block to further reduce switching (best-effort on Windows)
+            try:
+                if self._install_system_key_block():
+                    self._protect_run_active = True
+                    try:
+                        self.grabKeyboard()
+                        self._keyboard_grabbed = True
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+            self.output.appendPlainText("\n🔒 EXAM MODE ACTIVE — APP SWITCHING DISABLED\n")
+        except Exception:
+            pass
 
         # Now load the template into the editor (as requested: show after pre-run attempt)
         self.editor.setPlainText(template_code)
@@ -996,13 +1117,15 @@ else:
         self.set_file_actions_enabled(False)
 
         # Show banner and keep output as-is (pre-run messages remain)
-        self.set_error_banner(True, f"📝 Template '{template_name}' loaded — Fix the code and run successfully to enable minimize/maximize buttons")
+        is_visible = template_name in self.visible_template_keys
+        visible_text = "(Visible template)" if is_visible else "(From All Templates)"
+        self.set_error_banner(True, f"📝 Template '{template_name}' {visible_text} loaded — Fix the code and run successfully OR switch to another template from the Programs menu")
 
-        # Reset runtime error state and start group timer (if not started) when a visible template is selected
+        # Reset runtime error state and start group timer (if not started) when any template is selected
         self.runtime_error = False
         self.user_input = ""
-        if template_name in self.visible_template_keys:
-            self.start_group_timer_if_needed()
+        self.start_group_timer_if_needed()
+
 
     # ---------- FILE OPERATIONS & HELP ----------
     def new_file(self):
