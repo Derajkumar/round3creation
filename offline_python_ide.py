@@ -22,204 +22,117 @@ class OfflinePythonIDE(QWidget):
 
     # Template codes for each program (prog1..prog15)
     PROGRAM_TEMPLATES = {
-        "prog1": """# Program 1: Basic Input/Output and Arithmetic Operations
-num1 = int(input("Enter first number: "))
-num2 = int(input("Enter second number: "))
-sum_result = num1 + num2
-difference = num1 - num2
-product = num1 * num2
-print(f"Sum: {sum_result}")
-print(f"Difference: {difference}")
-print(f"Product: {product}")
-if num2 != 0:
-    quotient = num1 / num2
-    print(f"Quotient: {quotient}")
-else:
-    print("Cannot divide by zero!")
+        "prog1": """# Program 1:Print statement
+def add(x, lst=__):
+    if lst is None:
+        lst = []
+    lst.append(x)
+    return lst
+print(add(1))
+print(add(2))
 """,
         "prog2": """# Program 2: List/Array Operations
-numbers = []
-n = int(input("How many numbers do you want to add? "))
-for i in range(n):
-    num = int(input(f"Enter number {i+1}: "))
-    numbers.append(num)
-print(f"Original list: {numbers}")
-if len(numbers) > 0:
-    total = sum(numbers)
-    average = total / len(numbers)
-    print(f"Sum: {total}")
-    print(f"Average: {average}")
-    print(f"Maximum: {max(numbers)}")
-    print(f"Minimum: {min(numbers)}")
+a = False
+b = True
+c = False
+if a or b __ c:
+    print("YES")
 else:
-    print("List is empty!")
+    print("NO")
 """,
         "prog3": """# Program 3: String Processing and Manipulation
-text = input("Enter a string: ")
-print(f"Original string: {text}")
-print(f"Length: {len(text)}")
-print(f"Uppercase: {text.upper()}")
-print(f"Lowercase: {text.lower()}")
-vowels = "aeiouAEIOU"
-vowel_count = sum(1 for char in text if char in vowels)
-print(f"Number of vowels: {vowel_count}")
-reversed_text = text[::-1]
-print(f"Reversed: {reversed_text}")
-if text.lower().replace(' ', '') == reversed_text.lower().replace(' ', ''):
-    print("The string is a palindrome!")
-else:
-    print("The string is not a palindrome.")
+def register_user(user, users=None):
+    if users is None:
+        users = []
+ if user ____ in users:
+        users.append(user)
+ return users
+print(register_user("Alice")) 
+print(register_user("Bob"))
 """,
         "prog4": """# Program 4: Mathematical Computations
-def factorial(n):
-    if n == 0 or n == 1:
-        return 1
-    result = 1
-    for i in range(2, n + 1):
-        result *= i
-    return result
-
-def is_prime(num):
-    if num < 2:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
-
-num = int(input("Enter a number: "))
-if num >= 0:
-    fact = factorial(num)
-    print(f"Factorial of {num} is: {fact}")
-else:
-    print("Factorial is not defined for negative numbers!")
-if is_prime(num):
-    print(f"{num} is a prime number.")
-else:
-    print(f"{num} is not a prime number.")
-print(f"Square: {num ** 2}")
-print(f"Cube: {num ** 3}")
+funcs = []
+for i in range(3):
+    funcs.append(lambda:___ )
+for f in funcs:
+    print(f())
 """,
         "prog5": """# Program 5: Control Structures and Problem Solving
-start = int(input("Enter start number: "))
-end = int(input("Enter end number: "))
-divisor1 = int(input("Enter first divisor: "))
-divisor2 = int(input("Enter second divisor: "))
-print(f"\\nNumbers between {start} and {end} divisible by {divisor1} or {divisor2}:")
-count = 0
-for num in range(start, end + 1):
-    if num % divisor1 == 0 or num % divisor2 == 0:
-        print(num, end=" ")
-        count += 1
-print(f"\\n\\nTotal count: {count}")
-print(f"\\nNumbers divisible by both {divisor1} and {divisor2}:")
-both_count = 0
-for num in range(start, end + 1):
-    if num % divisor1 == 0 and num % divisor2 == 0:
-        print(num, end=" ")
-        both_count += 1
-print(f"\\n\\nTotal count: {both_count}")
+def make_funcs():
+    return [lambda __: x for x in range(5)]
+funcs = make_funcs()
+print([f() for f in funcs])
 """,
         "prog6": """# Program 6: File I/O Example
-lines = []
-n = int(input("How many lines will you enter? "))
-for i in range(n):
-    lines.append(input(f"Line {i+1}: "))
-import tempfile
-with tempfile.NamedTemporaryFile(mode='w+', delete=False) as f:
-    fname = f.name
-    for line in lines:
-        f.write(line + '\\n')
-print(f"Saved to temporary file: {fname}")
-with open(fname, 'r') as f:
-    content = f.read()
-print("File contents:")
-print(content)
+ x = 7
+if x __ 2 == 1:
+    print("Odd")
+else:
+    print("Even")
 """,
         "prog7": """# Program 7: Dictionary and Count Operations
-text = input("Enter a sentence: ")
-words = text.strip().split()
-freq = {}
-for w in words:
-    w = w.lower()
-    freq[w] = freq.get(w, 0) + 1
-print("Word frequencies:")
-for w, c in sorted(freq.items(), key=lambda x: (-x[1], x[0])):
-    print(f"{w}: {c}")
+funcs = []
+for i in range(3):
+    funcs.append(lambda:___ )
+for f in funcs:
+    print(f())
 """,
         "prog8": """# Program 8: Recursion (Fibonacci)
-def fib(n):
-    if n <= 0:
-        return 0
-    if n == 1:
-        return 1
-    return fib(n-1) + fib(n-2)
-n = int(input("Compute Fibonacci for n (<=30 recommended): "))
-print(f"Fibonacci({n}) = {fib(n)}")
+3) Code 
+for i in range(1, 6):
+    if i == 4:
+        ______
+    print(i)
 """,
         "prog9": """# Program 9: Simple Class Example
-class Rectangle:
-    def __init__(self, w, h):
-        self.w = w
-        self.h = h
-    def area(self):
-        return self.w * self.h
-    def perimeter(self):
-        return 2 * (self.w + self.h)
-w = int(input("Width: "))
-h = int(input("Height: "))
-r = Rectangle(w, h)
-print(f"Area: {r.area()}")
-print(f"Perimeter: {r.perimeter()}")
+def check_len(s):
+    if len(s) >= 5:
+        return "Long"
+    return "Short"
+_____________
+
 """,
         "prog10": """# Program 10: Exception Handling Example
-try:
-    a = int(input("Enter numerator: "))
-    b = int(input("Enter denominator: "))
-    result = a / b
-    print(f"Result: {result}")
-except ZeroDivisionError:
-    print("Cannot divide by zero!")
-except ValueError:
-    print("Please enter valid integers.")
+list = [1, 2, 3]
+def total(items):
+    return ___(items)
+print(total(list))
 """,
         "prog11": """# Program 11: Set Operations
-a = set(map(int, input("Enter numbers for set A (space-separated): ").split()))
-b = set(map(int, input("Enter numbers for set B (space-separated): ").split()))
-print("A union B:", sorted(a | b))
-print("A intersection B:", sorted(a & b))
-print("A - B:", sorted(a - b))
+data = {"x": 10, "y": 20}
+print(data.__("x"))
 """,
         "prog12": """# Program 12: Simple Sorting
-arr = list(map(int, input("Enter numbers to sort (space-separated): ").split()))
-print("Original:", arr)
-print("Sorted:", sorted(arr))
+try:
+    num = int("12a")
+¬¬_______  ValueError:
+    num = 0
+print(num)
 """,
         "prog13": """# Program 13: Using List Comprehensions
-n = int(input("Enter n: "))
-squares = [i*i for i in range(1, n+1)]
-print("Squares:", squares)
+data = [1, 2, 2, 3, 4, 3]
+result = []
+for x in data:
+    if x ___result:
+        result.append(x)
+print(result)
 """,
         "prog14": """# Program 14: Palindrome Number Check
-num = int(input("Enter a number: "))
-s = str(num)
-if s == s[::-1]:
-    print(f"{num} is a palindrome number")
-else:
-    print(f"{num} is not a palindrome number")
+nums = [2, 4, 6]
+total = 0
+for n in nums:
+    total __ n
+print(total)
 """,
         "prog15": """# Program 15: Simple Math Quiz
-import random
-a = random.randint(1, 20)
-b = random.randint(1, 20)
-ans = int(input(f"What is {a} + {b}? "))
-if ans == a + b:
-    print("Correct!")
-else:
-    print(f"Wrong — correct answer is {a + b}")
+x = 10
+def change():
+    __ x
+    x += 5
+change()
+print(x)
 """
     }
-
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Python Compiler of MNMJEC")
@@ -368,8 +281,10 @@ else:
         
         # ---------- TEMPLATES PANEL ----------
         # Display available templates as quick-access buttons
-        layout.addWidget(QLabel("📋 Available Templates (Click to Load)"))
+        self.templates_panel_label = QLabel("📋 Available Templates (Click to Load)")
+        layout.addWidget(self.templates_panel_label)
         templates_panel = QHBoxLayout()
+        self.templates_panel_layout = templates_panel  # Store reference for later access
         
         for key in self.visible_template_keys:
             i = int(key.replace("prog", ""))
@@ -392,7 +307,9 @@ else:
             self.template_buttons.append((btn, key))
         
         templates_panel.addStretch()
-        layout.addLayout(templates_panel)
+        self.templates_panel_widget = QWidget()  # Container for the layout
+        self.templates_panel_widget.setLayout(templates_panel)
+        layout.addWidget(self.templates_panel_widget)
         
         layout.addWidget(QLabel("📝 Code Editor"))
         layout.addWidget(self.editor, 3)
@@ -439,6 +356,10 @@ else:
         self._keyboard_grabbed = False
         # Exam mode flag (admin unlock required)
         self.exam_lock_active = False
+        # Halt mode flag (activated when template runs successfully with output)
+        self.halt_mode_active = False
+        # Track if output was produced during execution
+        self.execution_output_produced = False
         try:
             app_instance = QApplication.instance()
             if app_instance is not None:
@@ -571,6 +492,43 @@ else:
         except Exception:
             pass
 
+    def remove_template_from_ui(self, template_name):
+        """Remove a template from the UI when it produces output."""
+        try:
+            # Remove from visible_template_keys
+            if template_name in self.visible_template_keys:
+                self.visible_template_keys.remove(template_name)
+            
+            # Remove from menu actions
+            for i, act in enumerate(self.prog_actions):
+                act_text = act.text()
+                template_num = int(template_name.replace("prog", ""))
+                if f"Prog {template_num}" == act_text:
+                    self.prog_actions.pop(i)
+                    try:
+                        # Remove from menu (we need to find the Programs menu)
+                        for menu in self.menu_bar.findChildren(type(self.menu_bar)):
+                            if menu.title() == "Programs":
+                                menu.removeAction(act)
+                                break
+                    except Exception:
+                        pass
+                    break
+            
+            # Remove from template buttons
+            for i, (btn, key) in enumerate(self.template_buttons):
+                if key == template_name:
+                    btn.deleteLater()  # Remove button from UI
+                    self.template_buttons.pop(i)
+                    break
+            
+            # Hide templates panel if no templates remain
+            if not self.visible_template_keys:
+                self.templates_panel_label.setVisible(False)
+                self.templates_panel_widget.setVisible(False)
+        except Exception:
+            pass
+
     # (hash-based validation and external-debugger blocking removed)
 
     # ---------- Group timer for visible templates ----------
@@ -688,20 +646,21 @@ else:
         error = self.has_syntax_error(code)
         if error:
             self.output.clear()
-            self.output.appendPlainText("❌ SYNTAX ERROR DETECTED\n")
+            self.output.appendPlainText("❌ERROR DETECTED\n")
             self.output.appendPlainText("Error occurred\n")
             self.runtime_error = True
             self.disable_min_max()
             if self.current_template:
-                self.set_error_banner(True, f"❌ Syntax error detected — Fix the code or switch to another template from the Programs menu")
+                self.set_error_banner(True, f"❌error detected — Fix the code or switch to another template from the Programs menu")
             else:
-                self.set_error_banner(True, "❌ Syntax error detected — fix code and run to unlock window")
+                self.set_error_banner(True, "❌error detected — fix code and run to unlock window")
             self.lock_window()
             return
 
         # (previous code-integrity and external-debugger checks removed)
 
         self.runtime_error = False
+        self.execution_output_produced = False
         self.disable_min_max()
         self.set_error_banner(False, "")
 
@@ -818,6 +777,8 @@ else:
     def read_stdout(self):
         try:
             text = bytes(self.process.readAllStandardOutput()).decode(errors="replace")
+            if text.strip():  # Track that we've received actual output
+                self.execution_output_produced = True
             self.output.insertPlainText(text)
             cursor = self.output.textCursor()
             cursor.movePosition(QTextCursor.End)
@@ -897,11 +858,24 @@ else:
                     # Only treat the template as "fixed" if this run was initiated
                     # by the IDE itself (prevents marking fixed via external runs).
                     if getattr(self, '_last_run_initiated_by_ide', False):
-                        self.enable_min_max()
-                        self.unlock_window()
-                        self.set_error_banner(False, "")
-                        # After successful run, clear template selection
-                        self.current_template = None
+                        # If output was produced, clear the template
+                        if self.execution_output_produced:
+                            self.enable_min_max()
+                            self.unlock_window()
+                            self.set_error_banner(False, "")
+                            # Remove the template from UI since it produced output
+                            self.remove_template_from_ui(self.current_template)
+                            self.current_template = None
+                            self.output.appendPlainText(f"\n✅ Template executed successfully with output — template removed and menu minimized. You can now switch to another template from the Programs menu or continue working.")
+                        else:
+                            # No output produced, unlock normally
+                            self.enable_min_max()
+                            self.unlock_window()
+                            self.set_error_banner(False, "")
+                            # After successful run, remove the template as well
+                            self.remove_template_from_ui(self.current_template)
+                            self.current_template = None
+                            self.output.appendPlainText(f"\n✅ Code fixed successfully! Template removed and menu minimized. You can now switch to another template from the Programs menu or continue working.")
                     else:
                         # If the run was not initiated by this IDE, do not unlock.
                         self.disable_min_max()
@@ -910,7 +884,6 @@ else:
                     if not (self.group_timer_started and self.group_time_left_ms == 0):
                         self.set_program_actions_enabled(True)
                         self.set_file_actions_enabled(True)
-                    self.output.appendPlainText(f"\n✅ Code fixed successfully! You can now switch to another template from the Programs menu or continue working.")
                 else:
                     self.enable_min_max()
                     self.unlock_window()
@@ -976,6 +949,7 @@ else:
                 self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
                 self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
                 self.showNormal()
+                self.set_error_banner(False, "")
                 QMessageBox.information(self, "Unlocked", "Exam mode disabled.")
                 return
         except Exception:
@@ -1172,6 +1146,7 @@ else:
         self.set_error_banner(False, "")
         self.runtime_error = False
         self.user_input = ""
+        self.exam_lock_active = False
 
     def open_file(self):
         # Prevent opening another file while a template is active
@@ -1217,6 +1192,7 @@ else:
                 self.set_error_banner(False, "")
                 self.runtime_error = False
                 self.user_input = ""
+                self.exam_lock_active = False
             except Exception as e:
                 QMessageBox.critical(self, "Open Error", f"Failed to open file:\n{e}")
 
