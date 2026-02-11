@@ -22,7 +22,7 @@ class OfflinePythonIDE(QWidget):
 
     # Template codes for each program (prog1..prog15)
     PROGRAM_TEMPLATES = {
-        "prog1": """# Program 1:Print statement
+        "prog1": """# Program 1
 def add(x, lst=__):
     if lst is None:
         lst = []
@@ -31,7 +31,7 @@ def add(x, lst=__):
 print(add(1))
 print(add(2))
 """,
-        "prog2": """# Program 2: List/Array Operations
+        "prog2": """# Program 2
 a = False
 b = True
 c = False
@@ -40,7 +40,7 @@ if a or b __ c:
 else:
     print("NO")
 """,
-        "prog3": """# Program 3: String Processing and Manipulation
+        "prog3": """# Program 3
 def register_user(user, users=None):
     if users is None:
         users = []
@@ -50,41 +50,40 @@ def register_user(user, users=None):
 print(register_user("Alice")) 
 print(register_user("Bob"))
 """,
-        "prog4": """# Program 4: Mathematical Computations
+        "prog4": """# Program 4
 funcs = []
 for i in range(3):
     funcs.append(lambda:___ )
 for f in funcs:
     print(f())
 """,
-        "prog5": """# Program 5: Control Structures and Problem Solving
+        "prog5": """# Program 5
 def make_funcs():
     return [lambda __: x for x in range(5)]
 funcs = make_funcs()
 print([f() for f in funcs])
 """,
-        "prog6": """# Program 6: File I/O Example
+        "prog6": """# Program 6
  x = 7
 if x __ 2 == 1:
     print("Odd")
 else:
     print("Even")
 """,
-        "prog7": """# Program 7: Dictionary and Count Operations
+        "prog7": """# Program 7
 funcs = []
 for i in range(3):
     funcs.append(lambda:___ )
 for f in funcs:
     print(f())
 """,
-        "prog8": """# Program 8: Recursion (Fibonacci)
-3) Code 
+        "prog8": """# Program 8
 for i in range(1, 6):
     if i == 4:
         ______
     print(i)
 """,
-        "prog9": """# Program 9: Simple Class Example
+        "prog9": """# Program 9
 def check_len(s):
     if len(s) >= 5:
         return "Long"
@@ -92,24 +91,24 @@ def check_len(s):
 _____________
 
 """,
-        "prog10": """# Program 10: Exception Handling Example
+        "prog10": """# Program 10
 list = [1, 2, 3]
 def total(items):
     return ___(items)
 print(total(list))
 """,
-        "prog11": """# Program 11: Set Operations
+        "prog11": """# Program 11
 data = {"x": 10, "y": 20}
 print(data.__("x"))
 """,
-        "prog12": """# Program 12: Simple Sorting
+        "prog12": """# Program 12
 try:
     num = int("12a")
 ¬¬_______  ValueError:
     num = 0
 print(num)
 """,
-        "prog13": """# Program 13: Using List Comprehensions
+        "prog13": """# Program 13
 data = [1, 2, 2, 3, 4, 3]
 result = []
 for x in data:
@@ -117,14 +116,14 @@ for x in data:
         result.append(x)
 print(result)
 """,
-        "prog14": """# Program 14: Palindrome Number Check
+        "prog14": """# Program 14
 nums = [2, 4, 6]
 total = 0
 for n in nums:
     total __ n
 print(total)
 """,
-        "prog15": """# Program 15: Simple Math Quiz
+        "prog15": """# Program 15
 x = 10
 def change():
     __ x
